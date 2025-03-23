@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
+            $table->string('organization')->comment('services, sports')->nullable();
+            $table->string('page_title')->nullable();
             $table->string('page_url');
             $table->string('image_path');
             $table->boolean('is_active')->default(false);
             $table->foreignId('added_by')->constrained('users');
-            $table->foreignId('updated_by')->constrained('users');
+            $table->foreignId('updated_by')->constrained('users')->nullable();
             $table->timestamps();
         });
     }
