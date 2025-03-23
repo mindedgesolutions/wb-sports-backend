@@ -18,4 +18,5 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('banners', BannerController::class);
     Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
+    Route::get('banner/get', [BannerController::class, 'pageBanner']);
 });

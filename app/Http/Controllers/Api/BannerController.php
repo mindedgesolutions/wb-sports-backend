@@ -109,4 +109,17 @@ class BannerController extends Controller
 
         return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
+
+    // --------------------------------------------
+
+    public function pageBanner()
+    {
+        $data = Banner::where('page_url', request()->query('url'))
+            ->where('organization', 'services')
+            ->where('is_active', true)
+            ->select('image_path', 'page_title')
+            ->first();
+
+        return response()->json(['data' => $data], Response::HTTP_OK);
+    }
 }
