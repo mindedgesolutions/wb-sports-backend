@@ -21,8 +21,21 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('banners', BannerController::class)->except(['show']);
     Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
 });
+
+Route::middleware(['auth:api'])->group(function () {
+    Route::controller(AuthController::class)->prefix('auth')->group(function () {
+        Route::post('logout', 'logout');
+        Route::get('me', 'me');
+    });
+
+    Route::apiResource('CompTraingCourses', BannerController::class)->except(['show']);
+    Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
+});
+
+
 // Services app routes end -------------------------------
 
 // Services website routes start -------------------------------
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 // Services website routes end -------------------------------
+
