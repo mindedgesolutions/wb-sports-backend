@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\TestController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ComputerTraining;
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('login', 'login');
@@ -20,17 +21,11 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('banners', BannerController::class)->except(['show']);
     Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
+
+    Route::apiResource('com-training-courses', ComputerTraining::class)->except(['show']);
 });
 
-Route::middleware(['auth:api'])->group(function () {
-    Route::controller(AuthController::class)->prefix('auth')->group(function () {
-        Route::post('logout', 'logout');
-        Route::get('me', 'me');
-    });
 
-    Route::apiResource('CompTraingCourses', BannerController::class)->except(['show']);
-    Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
-});
 
 
 // Services app routes end -------------------------------

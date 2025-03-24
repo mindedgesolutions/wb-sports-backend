@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Requests\BannerRequest;
 use App\Models\Banner;
+use App\Models\CompTrainCourseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ComputerTraining extends Controller
 {
@@ -29,47 +31,25 @@ class ComputerTraining extends Controller
      */
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(),['course_type'=>'required']);
+        if($validator->fails()){
+
+            return response()->json(['errors'=>$validator->messages()]);
+        }
+
         try {
             DB::beginTransaction();
 
-            $check = Banner::where('page_url', $request->page)->first();
-            $filePath = '';
-
-            if ($request->hasFile('banner')) {
-                $file = $request->file('banner');
-                $filename = Str::random(10) . time() . '-' . $file->getClientOriginalName();
-                $directory = 'uploads/services/banners';
-
-                if (!Storage::disk('public')->exists($directory)) {
-                    Storage::disk('public')->makeDirectory($directory);
-                }
-
-                if ($check) {
-                    $deletePath = str_replace('/storage', '', $check->image_path);
-
-                    if (Storage::disk('public')->exists($deletePath)) {
-                        Storage::disk('public')->delete($deletePath);
-                    }
-                }
-
-                $filePath = $file->storeAs($directory, $filename, 'public');
-            }
-
-            if ($check) {
-                Banner::where('page_url', $request->page)->update([
-                    'page_title' => $request->pageTitle ?? null,
-                    'updated_by' => Auth::id(),
-                    'image_path' => Storage::url($filePath),
+            CompTrainCourseDetail::create([
+                    'course_type' => $request->courseType,
+                    'course_name' => $request->courseName,
+                    'course_duration' => $request->courseName,
+                    'course_eligibility' => $request->courseName,
+                    'course_fees' => $request->courseName,
+                    'organization' => 'services'
                 ]);
-            } else {
-                Banner::create([
-                    'page_url' => $request->page,
-                    'page_title' => $request->pageTitle ?? null,
-                    'added_by' => Auth::id(),
-                    'image_path' => Storage::url($filePath),
-                    'organization' => 'services',
-                ]);
-            }
+
 
             DB::commit();
 
