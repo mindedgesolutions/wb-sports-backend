@@ -21,11 +21,19 @@ class BannerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'page' => 'required',
-            'pageTitle' => 'nullable|max:255',
-            'banner' => 'required|image|mimes:jpeg,png,jpg,webp|max:500',
-        ];
+        if (!$this->id) {
+            return [
+                'page' => 'required',
+                'pageTitle' => 'nullable|max:255',
+                'banner' => 'required|image|mimes:jpeg,png,jpg,webp|max:500',
+            ];
+        } else {
+            return [
+                'page' => 'nullable',
+                'pageTitle' => 'nullable|max:255',
+                'banner' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:500',
+            ];
+        }
     }
 
     public function attributes()

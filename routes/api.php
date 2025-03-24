@@ -18,7 +18,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('me', 'me');
     });
 
-    Route::apiResource('banners', BannerController::class)->except(['show']);
+    Route::apiResource('banners', BannerController::class)->except(['show', 'update']);
+    Route::post('banners/update/{id}', [BannerController::class, 'bannerUpdate']);
     Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
 });
 // Services app routes end -------------------------------

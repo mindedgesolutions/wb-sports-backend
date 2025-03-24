@@ -83,9 +83,49 @@ class BannerController extends Controller
 
     // --------------------------------------------
 
-    public function update(Request $request, string $id)
+    public function bannerUpdate(BannerRequest $request, $id)
     {
-        //
+        $data = Banner::findOrFail($id);
+
+        try {
+            DB::beginTransaction();
+
+            $filePath = '';
+
+            if ($request->hasFile('banner') && $request->file('banner')->getSize() > 0) {
+                $file = $request->file('banner');
+                $filename = Str::random(10) . time() . '-' . $file->getClientOriginalName();
+                $directory = 'uploads/services/banners';
+
+                if (!Storage::disk('public')->exists($directory)) {
+                    Storage::disk('public')->makeDirectory($directory);
+                }
+
+                if ($data) {
+                    $deletePath = str_replace('/storage', '', $data->image_path);
+
+                    if (Storage::disk('public')->exists($deletePath)) {
+                        Storage::disk('public')->delete($deletePath);
+                    }
+                }
+
+                $filePath = $file->storeAs($directory, $filename, 'public');
+            }
+
+            Banner::where('id', $id)->update([
+                'page_title' => $request->pageTitle ?? $data->page_title,
+                'updated_by' => Auth::id(),
+                'image_path' => $request->hasFile('banner') ? Storage::url($filePath) : $data->image_path,
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     // --------------------------------------------
