@@ -32,6 +32,9 @@ class BannerController extends Controller
         try {
             DB::beginTransaction();
 
+            $check = Banner::where('page_url', $request->page)->first();
+            $filePath = '';
+
             if ($request->hasFile('banner')) {
                 $file = $request->file('banner');
                 $filename = Str::random(10) . time() . '-' . $file->getClientOriginalName();
@@ -40,16 +43,33 @@ class BannerController extends Controller
                 if (!Storage::disk('public')->exists($directory)) {
                     Storage::disk('public')->makeDirectory($directory);
                 }
+
+                if ($check) {
+                    $deletePath = str_replace('/storage', '', $check->image_path);
+
+                    if (Storage::disk('public')->exists($deletePath)) {
+                        Storage::disk('public')->delete($deletePath);
+                    }
+                }
+
                 $filePath = $file->storeAs($directory, $filename, 'public');
             }
 
-            Banner::create([
-                'page_url' => $request->page,
-                'page_title' => $request->pageTitle ?? null,
-                'added_by' => Auth::id(),
-                'image_path' => Storage::url($filePath),
-                'organization' => 'services',
-            ]);
+            if ($check) {
+                Banner::where('page_url', $request->page)->update([
+                    'page_title' => $request->pageTitle ?? null,
+                    'updated_by' => Auth::id(),
+                    'image_path' => Storage::url($filePath),
+                ]);
+            } else {
+                Banner::create([
+                    'page_url' => $request->page,
+                    'page_title' => $request->pageTitle ?? null,
+                    'added_by' => Auth::id(),
+                    'image_path' => Storage::url($filePath),
+                    'organization' => 'services',
+                ]);
+            }
 
             DB::commit();
 
@@ -59,13 +79,6 @@ class BannerController extends Controller
             DB::rollBack();
             return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    // --------------------------------------------
-
-    public function show(string $id)
-    {
-        //
     }
 
     // --------------------------------------------
