@@ -23,9 +23,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
 
     Route::apiResource('com-training-courses', ComputerTraining::class)->except(['show']);
+
 });
 
-
+Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
 
 
 // Services app routes end -------------------------------

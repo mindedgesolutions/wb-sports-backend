@@ -74,7 +74,7 @@ class ComputerTraining extends Controller
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
@@ -92,4 +92,19 @@ class ComputerTraining extends Controller
     {
         //
     }
+
+
+    public function courseList() // <-- Add Request here
+{
+    try {
+
+        $courses = CompTrainCourseDetail::where('organisation', "services")->get();
+
+        return response()->json(['courses' => $courses], Response::HTTP_OK);
+
+    } catch (\Throwable $th) {
+        Log::error($th->getMessage());
+        return response()->json(['message' => 'Server Error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+}
 }
