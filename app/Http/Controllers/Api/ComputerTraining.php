@@ -4,16 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests\BannerRequest;
-use App\Models\Banner;
 use App\Models\CompTrainCourseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ComputerTraining extends Controller
@@ -39,11 +34,20 @@ class ComputerTraining extends Controller
             'course_eligibility' => 'required|string',
             'course_fees' => 'required|string',
             'organisation' => 'required|string',
+        ], [
+            '*.required' => ':Attribute is required',
+        ], [
+            'course_type' => 'Course type',
+            'course_name' => 'Course name',
+            'course_duration' => 'Course duration',
+            'course_eligibility' => 'Course eligibility',
+            'course_fees' => 'Course fees',
+            'organisation' => 'Organisation',
         ]);
 
         // If validation fails, return errors
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->messages()], 422);
+            return response()->json(['message' => $validator->errors()], Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -56,8 +60,7 @@ class ComputerTraining extends Controller
                 'course_eligibility' => $request->input('course_eligibility'),
                 'course_fees' => $request->input('course_fees'),
                 'organisation' => $request->input('organisation'),
-                ]);
-
+            ]);
 
             DB::commit();
 
