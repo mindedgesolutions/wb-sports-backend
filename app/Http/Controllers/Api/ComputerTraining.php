@@ -32,22 +32,30 @@ class ComputerTraining extends Controller
     public function store(Request $request)
     {
 
-        $validator = Validator::make($request->all(),['course_type'=>'required']);
-        if($validator->fails()){
+        $validator = Validator::make($request->all(), [
+            'course_type' => 'required|string',
+            'course_name' => 'required|string',
+            'course_duration' => 'required|string',
+            'course_eligibility' => 'required|string',
+            'course_fees' => 'required|string',
+            'organisation' => 'required|string',
+        ]);
 
-            return response()->json(['errors'=>$validator->messages()]);
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->messages()], 422);
         }
 
         try {
             DB::beginTransaction();
 
             CompTrainCourseDetail::create([
-                    'course_type' => $request->courseType,
-                    'course_name' => $request->courseName,
-                    'course_duration' => $request->courseName,
-                    'course_eligibility' => $request->courseName,
-                    'course_fees' => $request->courseName,
-                    'organization' => 'services'
+                'course_type' => $request->input('course_type'),
+                'course_name' => $request->input('course_name'),
+                'course_duration' => $request->input('course_duration'),
+                'course_eligibility' => $request->input('course_eligibility'),
+                'course_fees' => $request->input('course_fees'),
+                'organisation' => $request->input('organisation'),
                 ]);
 
 
