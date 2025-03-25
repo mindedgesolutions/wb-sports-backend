@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('course_type');
             $table->string('course_name');
+            $table->string('course_slug')->nullable();
             $table->string('course_duration');
             $table->string('course_eligibility');
-            $table->string('course_fees');
+            $table->integer('course_fees')->default(0);
             $table->string('organisation')->comment('1.services 2.sports');
             $table->timestamps();
         });
