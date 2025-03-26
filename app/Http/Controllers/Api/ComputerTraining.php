@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ComputerTraining extends Controller
 {
@@ -51,9 +52,16 @@ class ComputerTraining extends Controller
         try {
             DB::beginTransaction();
 
+            $slug = Str::slug($request->input('courseName'));
+            $check = CompTrainCourseDetail::where('course_slug', $slug)->first();
+            if ($check) {
+                return response()->json(['errors' => ['Course already exists']], Response::HTTP_CONFLICT);
+            }
+
             CompTrainCourseDetail::create([
                 'course_type' => $request->input('courseType'),
                 'course_name' => $request->input('courseName'),
+                'course_slug' => Str::slug($request->input('courseName')),
                 'course_duration' => $request->input('duration'),
                 'course_eligibility' => $request->input('eligibility'),
                 'course_fees' => $request->input('courseFee'),
