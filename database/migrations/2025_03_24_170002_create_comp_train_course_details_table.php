@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('course_eligibility');
             $table->integer('course_fees')->default(0);
             $table->string('organisation')->comment('1.services 2.sports');
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

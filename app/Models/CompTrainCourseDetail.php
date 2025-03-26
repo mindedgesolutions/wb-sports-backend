@@ -14,5 +14,6 @@ class CompTrainCourseDetail extends Model
         'course_eligibility',
         'course_fees',
         'organisation',
+        'is_active',
     ];
 }

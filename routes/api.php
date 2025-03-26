@@ -23,6 +23,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
 
     Route::apiResource('com-training-courses', ComputerTraining::class)->except(['show']);
+    Route::put('com-training-courses/activate/{id}', [ComputerTraining::class, 'activate']);
 });
 
 

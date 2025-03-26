@@ -78,6 +78,13 @@ class ComputerTraining extends Controller
         }
     }
 
+    public function activate(Request $request, string $id)
+    {
+        CompTrainCourseDetail::where('id', $id)->update(['is_active' => $request->is_active]);
+
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
+    }
+
     /**
      * Display the specified resource.
      */
