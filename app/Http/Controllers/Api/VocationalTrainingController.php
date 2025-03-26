@@ -17,57 +17,52 @@ class VocationalTrainingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function indexContent()
-    {
+    public function indexContent() {}
 
-    }
-
-       /**
-        * Store a newly created resource in storage.
-        */
+    /**
+     * Store a newly created resource in storage.
+     */
     public function storeContent(Request $request)
-       {
-           $validator = Validator::make($request->all(), [
-               'content' => 'required|string',
-           ], [
-               '*.required' => ':Attribute is required',
-           ], [
-               'content' => 'content',
+    {
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|string',
+        ], [
+            '*.required' => ':Attribute is required',
+        ], [
+            'content' => 'content',
+        ]);
 
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+        }
 
-           ]);
+        try {
+            DB::beginTransaction();
 
-           // If validation fails, return errors
-           if ($validator->fails()) {
-               return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
-           }
+            VocationalTraining::create([
+                'content' => $request->content,
+            ]);
 
-           try {
-               DB::beginTransaction();
+            DB::commit();
 
-               VocationalTraining::create([
-                   'content' => $request->input('content'),
-               ]);
-
-               DB::commit();
-
-               return response()->json(['message' => 'success'], Response::HTTP_CREATED);
-           } catch (\Throwable $th) {
-               Log::error($th->getMessage());
-               DB::rollBack();
-               return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-           }
-       }
+            return response()->json(['message' => 'success'], Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     public function activateContent(Request $request, string $id)
-       {
+    {
         VocationalTraining::where('id', $id)->update(['is_active' => $request->is_active]);
 
-           return response()->json(['message' => 'success'], Response::HTTP_OK);
-       }
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
+    }
 
-        //
+    //
 
 
     /**
@@ -118,6 +113,4 @@ class VocationalTrainingController extends Controller
     {
         //
     }
-
-
 }
