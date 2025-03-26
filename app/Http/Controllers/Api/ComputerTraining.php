@@ -21,7 +21,7 @@ class ComputerTraining extends Controller
     {
 
 
-            $courses = CompTrainCourseDetail::where('organisation', "services")->get();
+            $courses = CompTrainCourseDetail::where('organisation', "services")->paginate(10);
 
             return response()->json(['courses' => $courses], Response::HTTP_OK);
 
@@ -105,7 +105,55 @@ class ComputerTraining extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'courseType' => 'required|string',
+            'courseName' => 'required|string',
+            'duration' => 'required|string',
+            'eligibility' => 'required|string',
+            'courseFee' => 'required|string',
+        ], [
+            '*.required' => ':Attribute is required',
+        ], [
+            'courseType' => 'Course type',
+            'courseName' => 'Course name',
+            'duration' => 'Course duration',
+            'eligibility' => 'Course eligibility',
+            'courseFee' => 'Course fees',
+        ]);
+
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $slug = Str::slug($request->input('courseName'));
+            $check = CompTrainCourseDetail::where('course_slug', $slug)->where('id','!=',$id)->first();
+            if ($check) {
+                return response()->json(['errors' => ['Course already exists']], Response::HTTP_CONFLICT);
+            }
+
+            CompTrainCourseDetail::where('id', $id)->update([
+                'course_type' => $request->input('courseType'),
+                'course_name' => $request->input('courseName'),
+                'course_slug' => Str::slug($request->input('courseName')),
+                'course_duration' => $request->input('duration'),
+                'course_eligibility' => $request->input('eligibility'),
+                'course_fees' => $request->input('courseFee'),
+
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -122,7 +170,7 @@ class ComputerTraining extends Controller
 {
     try {
 
-        $courses = CompTrainCourseDetail::where('organisation', "services")->get();
+        $courses = CompTrainCourseDetail::where('organisation', "services")->where('is_active', true)->get();
 
         return response()->json(['courses' => $courses], Response::HTTP_OK);
 
