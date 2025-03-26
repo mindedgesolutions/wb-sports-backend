@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\CompTrainCourseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -21,9 +20,9 @@ class ComputerTraining extends Controller
     {
 
 
-            $courses = CompTrainCourseDetail::where('organisation', "services")->paginate(10);
+        $courses = CompTrainCourseDetail::where('organisation', "services")->paginate(10);
 
-            return response()->json(['courses' => $courses], Response::HTTP_OK);
+        return response()->json(['courses' => $courses], Response::HTTP_OK);
 
 
     }
