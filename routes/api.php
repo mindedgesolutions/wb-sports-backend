@@ -24,7 +24,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('com-training-courses', ComputerTraining::class)->except(['show']);
     Route::put('com-training-courses/activate/{id}', [ComputerTraining::class, 'activate']);
-
 });
 
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
