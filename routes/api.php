@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
-use App\Http\Controllers\Api\TestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ComputerTraining;
 
@@ -34,4 +33,3 @@ Route::middleware(['auth:api'])->group(function () {
 // Services website routes start -------------------------------
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 // Services website routes end -------------------------------
-
