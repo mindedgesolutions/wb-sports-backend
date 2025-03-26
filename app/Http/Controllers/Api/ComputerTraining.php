@@ -4,17 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests\BannerRequest;
-use App\Models\Banner;
 use App\Models\CompTrainCourseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ComputerTraining extends Controller
 {
@@ -33,31 +29,44 @@ class ComputerTraining extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'course_type' => 'required|string',
-            'course_name' => 'required|string',
-            'course_duration' => 'required|string',
-            'course_eligibility' => 'required|string',
-            'course_fees' => 'required|string',
-            'organisation' => 'required|string',
+            'courseType' => 'required|string',
+            'courseName' => 'required|string',
+            'duration' => 'required|string',
+            'eligibility' => 'required|string',
+            'courseFee' => 'required|string',
+        ], [
+            '*.required' => ':Attribute is required',
+        ], [
+            'courseType' => 'Course type',
+            'courseName' => 'Course name',
+            'duration' => 'Course duration',
+            'eligibility' => 'Course eligibility',
+            'courseFee' => 'Course fees',
         ]);
 
         // If validation fails, return errors
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->messages()], 422);
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             DB::beginTransaction();
 
-            CompTrainCourseDetail::create([
-                'course_type' => $request->input('course_type'),
-                'course_name' => $request->input('course_name'),
-                'course_duration' => $request->input('course_duration'),
-                'course_eligibility' => $request->input('course_eligibility'),
-                'course_fees' => $request->input('course_fees'),
-                'organisation' => $request->input('organisation'),
-                ]);
+            $slug = Str::slug($request->input('courseName'));
+            $check = CompTrainCourseDetail::where('course_slug', $slug)->first();
+            if ($check) {
+                return response()->json(['errors' => ['Course already exists']], Response::HTTP_CONFLICT);
+            }
 
+            CompTrainCourseDetail::create([
+                'course_type' => $request->input('courseType'),
+                'course_name' => $request->input('courseName'),
+                'course_slug' => Str::slug($request->input('courseName')),
+                'course_duration' => $request->input('duration'),
+                'course_eligibility' => $request->input('eligibility'),
+                'course_fees' => $request->input('courseFee'),
+                'organisation' => 'services',
+            ]);
 
             DB::commit();
 
@@ -67,6 +76,13 @@ class ComputerTraining extends Controller
             DB::rollBack();
             return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function activate(Request $request, string $id)
+    {
+        CompTrainCourseDetail::where('id', $id)->update(['is_active' => $request->is_active]);
+
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
     /**

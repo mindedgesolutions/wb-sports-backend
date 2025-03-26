@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('image_path');
             $table->boolean('is_active')->default(false);
             $table->foreignId('added_by')->constrained('users');
-            $table->foreignId('updated_by')->constrained('users')->nullable();
+            $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

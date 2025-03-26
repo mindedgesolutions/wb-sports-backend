@@ -22,7 +22,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
         }
 
         if (!Auth::attempt(['email' => $request->username, 'password' => $request->password])) {
