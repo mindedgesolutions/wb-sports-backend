@@ -32,10 +32,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::controller(VocationalTrainingController::class)->prefix('vocational')->group(function(){
         Route::prefix('content')->group(function(){
             Route::post('store-content', 'storeContent');
-            Route::put('activateContent', 'activateContent');
-            Route::post('updateContent', 'updateContent');
-            Route::delete('destroyContent', 'destroyContent');
-            Route::get('indexContent', 'indexContent');
+            Route::put('activate-content/{id}', 'activateContent');
+            Route::post('update-content', 'updateContent');
+            Route::delete('destroy-content', 'destroyContent');
+            Route::get('index-content', 'indexContent');
         });
         Route::prefix('centre-list')->group(function(){
             Route::post('store-centre', 'storeCentre');
