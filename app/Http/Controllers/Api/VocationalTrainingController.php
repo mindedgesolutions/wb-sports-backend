@@ -17,9 +17,9 @@ class VocationalTrainingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function indexContent()
     {
-        //
+
     }
 
        /**
@@ -60,7 +60,7 @@ class VocationalTrainingController extends Controller
        }
 
 
-    public function activate(Request $request, string $id)
+    public function activateContent(Request $request, string $id)
        {
         VocationalTraining::where('id', $id)->update(['is_active' => $request->is_active]);
 
@@ -81,7 +81,7 @@ class VocationalTrainingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateContent(Request $request, string $id)
     {
         //
     }
@@ -89,8 +89,35 @@ class VocationalTrainingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroyContent(string $id)
     {
         //
     }
+
+    //Centre Start
+    public function indexCentre(string $id)
+    {
+        //
+    }
+
+    public function storeCentre(string $id)
+    {
+        //
+    }
+
+    public function activateCentre(string $id)
+    {
+        //
+    }
+
+    public function updateCentre(string $id)
+    {
+        //
+    }
+    public function destroyCentre(string $id)
+    {
+        //
+    }
+
+
 }

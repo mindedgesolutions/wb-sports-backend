@@ -28,6 +28,25 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('vocatioanl-training-courses', VocationalTrainingController::class)->except(['show']);
 
+
+    Route::controller(VocationalTrainingController::class)->prefix('vocational')->group(function(){
+        Route::prefix('content')->group(function(){
+            Route::post('store-content', 'storeContent');
+            Route::put('activateContent', 'activateContent');
+            Route::post('updateContent', 'updateContent');
+            Route::delete('destroyContent', 'destroyContent');
+            Route::get('indexContent', 'indexContent');
+        });
+        Route::prefix('centre-list')->group(function(){
+            Route::post('store-centre', 'storeCentre');
+            Route::put('activate-centre', 'activateCentre');
+            Route::post('update-centre', 'updateCentre');
+            Route::delete('destroy-centre', 'destroyCentre');
+            Route::get('index-centre', 'indexCentre');
+
+        });
+    });
+
 });
 
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
