@@ -33,8 +33,6 @@ class VocationalTrainingController extends Controller
                '*.required' => ':Attribute is required',
            ], [
                'content' => 'content',
-
-
            ]);
 
            // If validation fails, return errors
@@ -62,7 +60,7 @@ class VocationalTrainingController extends Controller
 
     public function activateContent(Request $request, string $id)
        {
-        VocationalTraining::where('id', $id)->update(['is_active' => $request->is_active]);
+            VocationalTraining::where('id', $id)->update(['is_active' => $request->is_active]);
 
            return response()->json(['message' => 'success'], Response::HTTP_OK);
        }

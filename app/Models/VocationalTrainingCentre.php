@@ -8,9 +8,9 @@ class VocationalTrainingCentre extends Model
 {
     protected $fillable = [
     'district',
-    'nameOfcentre',
-    'Address',
-    'Phone',
+    'name_of_centre',
+    'address',
+    'phone',
     'is_active',
 ];
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vocational_trainings', function (Blueprint $table) {
             $table->id();
-            $table->string('content');
+            $table->text('content');
             $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
