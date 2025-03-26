@@ -19,8 +19,15 @@ class ComputerTraining extends Controller
      */
     public function index()
     {
-        //
+
+
+            $courses = CompTrainCourseDetail::where('organisation', "services")->get();
+
+            return response()->json(['courses' => $courses], Response::HTTP_OK);
+
+
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -104,9 +111,10 @@ class ComputerTraining extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        //
+        CompTrainCourseDetail::where('id', $id)->delete();
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
 
