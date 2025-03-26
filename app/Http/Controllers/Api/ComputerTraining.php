@@ -28,38 +28,36 @@ class ComputerTraining extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'course_type' => 'required|string',
-            'course_name' => 'required|string',
-            'course_duration' => 'required|string',
-            'course_eligibility' => 'required|string',
-            'course_fees' => 'required|string',
-            'organisation' => 'required|string',
+            'courseType' => 'required|string',
+            'courseName' => 'required|string',
+            'duration' => 'required|string',
+            'eligibility' => 'required|string',
+            'courseFee' => 'required|string',
         ], [
             '*.required' => ':Attribute is required',
         ], [
-            'course_type' => 'Course type',
-            'course_name' => 'Course name',
-            'course_duration' => 'Course duration',
-            'course_eligibility' => 'Course eligibility',
-            'course_fees' => 'Course fees',
-            'organisation' => 'Organisation',
+            'courseType' => 'Course type',
+            'courseName' => 'Course name',
+            'duration' => 'Course duration',
+            'eligibility' => 'Course eligibility',
+            'courseFee' => 'Course fees',
         ]);
 
         // If validation fails, return errors
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
         }
 
         try {
             DB::beginTransaction();
 
             CompTrainCourseDetail::create([
-                'course_type' => $request->input('course_type'),
-                'course_name' => $request->input('course_name'),
-                'course_duration' => $request->input('course_duration'),
-                'course_eligibility' => $request->input('course_eligibility'),
-                'course_fees' => $request->input('course_fees'),
-                'organisation' => $request->input('organisation'),
+                'course_type' => $request->input('courseType'),
+                'course_name' => $request->input('courseName'),
+                'course_duration' => $request->input('duration'),
+                'course_eligibility' => $request->input('eligibility'),
+                'course_fees' => $request->input('courseFee'),
+                'organisation' => 'services',
             ]);
 
             DB::commit();
