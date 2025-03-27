@@ -178,5 +178,7 @@ class CompSyllabusController extends Controller
     public function activate(Request $request, string $id)
     {
         CompSyllabus::where('id', $id)->update(['is_active' => $request->is_active]);
+
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 }

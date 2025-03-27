@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\CompCentreController;
 use App\Http\Controllers\Api\CompSyllabusController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ComputerTraining;
+use App\Http\Controllers\Api\ServiceWebsiteController;
 use App\Http\Controllers\Api\VocationalTrainingController;
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
@@ -31,6 +33,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('comp-syllabus/update/{id}', [CompSyllabusController::class, 'syllabusUpdate']);
     Route::put('comp-syllabus/activate/{id}', [CompSyllabusController::class, 'activate']);
 
+    Route::apiResource('comp-centres', CompCentreController::class)->except(['show']);
+
     Route::apiResource('vocatioanl-training-courses', VocationalTrainingController::class)->except(['show']);
 
     Route::controller(VocationalTrainingController::class)->prefix('vocational')->group(function () {
@@ -53,6 +57,9 @@ Route::middleware(['auth:api'])->group(function () {
 // Services app routes end -------------------------------
 
 // Services website routes start -------------------------------
+Route::controller(ServiceWebsiteController::class)->prefix('services')->group(function () {
+    Route::get('districts', 'districts');
+});
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
 // Services website routes end -------------------------------
