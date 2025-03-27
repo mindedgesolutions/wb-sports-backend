@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('comp_syllabi', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
             $table->string('file_path');
             $table->string('organisation');
             $table->foreignId('added_by')->constrained('users');
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }
