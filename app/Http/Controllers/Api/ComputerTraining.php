@@ -23,8 +23,6 @@ class ComputerTraining extends Controller
         $courses = CompTrainCourseDetail::where('organisation', "services")->paginate(10);
 
         return response()->json(['courses' => $courses], Response::HTTP_OK);
-
-
     }
 
 
@@ -94,10 +92,7 @@ class ComputerTraining extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-
-    }
+    public function show(string $id) {}
 
     /**
      * Update the specified resource in storage.
@@ -129,7 +124,7 @@ class ComputerTraining extends Controller
             DB::beginTransaction();
 
             $slug = Str::slug($request->input('courseName'));
-            $check = CompTrainCourseDetail::where('course_slug', $slug)->where('id','!=',$id)->first();
+            $check = CompTrainCourseDetail::where('course_slug', $slug)->where('id', '!=', $id)->first();
             if ($check) {
                 return response()->json(['errors' => ['Course already exists']], Response::HTTP_CONFLICT);
             }
@@ -152,7 +147,6 @@ class ComputerTraining extends Controller
             DB::rollBack();
             return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 
     /**
@@ -166,16 +160,15 @@ class ComputerTraining extends Controller
 
 
     public function courseList() // <-- Add Request here
-{
-    try {
+    {
+        try {
 
-        $courses = CompTrainCourseDetail::where('organisation', "services")->where('is_active', true)->get();
+            $courses = CompTrainCourseDetail::where('organisation', "services")->where('is_active', true)->get();
 
-        return response()->json(['courses' => $courses], Response::HTTP_OK);
-
-    } catch (\Throwable $th) {
-        Log::error($th->getMessage());
-        return response()->json(['message' => 'Server Error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['courses' => $courses], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json(['message' => 'Server Error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
-}
 }
