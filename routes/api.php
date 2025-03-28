@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CompCentreController;
 use App\Http\Controllers\Api\CompSyllabusController;
 use App\Http\Controllers\Api\ComputerTraining;
+use App\Http\Controllers\Api\MountaineeringController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
 use App\Http\Controllers\Api\VocationalTrainingController;
 
@@ -34,6 +35,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('comp-syllabus/activate/{id}', [CompSyllabusController::class, 'activate']);
 
     Route::apiResource('comp-centres', CompCentreController::class)->except(['show']);
+    Route::put('comp-centres/activate/{id}', [CompCentreController::class, 'activate']);
 
     Route::apiResource('vocatioanl-training-courses', VocationalTrainingController::class)->except(['show']);
 
@@ -51,6 +53,21 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('update-centre', 'updateCentre');
             Route::delete('destroy-centre', 'destroyCentre');
             Route::get('index-centre', 'indexCentre');
+        });
+    });
+
+    Route::controller(MountaineeringController::class)->prefix('mountain')->group(function () {
+        Route::prefix('general-body')->group(function () {
+            Route::get('index', 'gbIndex');
+            Route::post('store', 'gbStore');
+            Route::put('update/{id}', 'gbUpdate');
+            Route::delete('destroy/{id}', 'gbDestroy');
+        });
+        Route::prefix('mountain-list')->group(function () {
+            Route::get('index', 'mlIndex');
+            Route::post('store', 'mlStore');
+            Route::put('update/{id}', 'mlUpdate');
+            Route::delete('destroy/{id}', 'mlDestroy');
         });
     });
 });
