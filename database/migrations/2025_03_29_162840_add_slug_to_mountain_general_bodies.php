@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('comp_syllabi', function (Blueprint $table) {
+        Schema::table('mountain_general_bodies', function (Blueprint $table) {
             $table->string('slug')->nullable();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('comp_syllabi', function (Blueprint $table) {
+        Schema::table('mountain_general_bodies', function (Blueprint $table) {
             $table->dropColumn('slug');
         });
     }

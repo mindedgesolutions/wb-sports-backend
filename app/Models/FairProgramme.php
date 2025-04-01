@@ -4,14 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MountainGeneralBody extends Model
+class FairProgramme extends Model
 {
     protected $fillable = [
-        'designation',
-        'name',
-        'description',
-        'organisation',
-        'added_by',
+        'title',
         'slug',
+        'occurance',
+        'description',
+        'uuid',
+        'added_by',
+        'updated_by',
+        'organisation'
     ];
 }
