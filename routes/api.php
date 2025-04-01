@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CompCentreController;
 use App\Http\Controllers\Api\CompSyllabusController;
 use App\Http\Controllers\Api\ComputerTraining;
+use App\Http\Controllers\Api\FairProgrammeController;
 use App\Http\Controllers\Api\MountaineeringController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
 use App\Http\Controllers\Api\VocationalTrainingController;
@@ -58,17 +59,25 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::controller(MountaineeringController::class)->prefix('mountain')->group(function () {
         Route::prefix('general-body')->group(function () {
-            Route::get('index', 'gbIndex');
+            Route::get('list', 'gbIndex');
             Route::post('store', 'gbStore');
             Route::put('update/{id}', 'gbUpdate');
-            Route::delete('destroy/{id}', 'gbDestroy');
+            Route::delete('delete/{id}', 'gbDestroy');
         });
-        Route::prefix('mountain-list')->group(function () {
-            Route::get('index', 'mlIndex');
-            Route::post('store', 'mlStore');
-            Route::put('update/{id}', 'mlUpdate');
-            Route::delete('destroy/{id}', 'mlDestroy');
+        Route::prefix('training-calendar')->group(function () {
+            Route::get('list', 'tcIndex');
+            Route::post('store', 'tcStore');
+            Route::put('update/{id}', 'tcUpdate');
+            Route::delete('delete/{id}', 'tcDestroy');
         });
+    });
+
+    Route::controller(FairProgrammeController::class)->prefix('fair-programme')->group(function () {
+        Route::get('list', 'fpList');
+        Route::post('store', 'fpStore');
+        Route::put('update/{id}', 'fpUpdate');
+        Route::put('activate/{id}', 'fpActivate');
+        Route::delete('delete/{id}', 'fpDestroy');
     });
 });
 // Services app routes end -------------------------------

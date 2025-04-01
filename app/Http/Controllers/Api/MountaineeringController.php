@@ -8,12 +8,18 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class MountaineeringController extends Controller
 {
     // General body methods start -------------------------------
 
-    public function gbIndex() {}
+    public function gbIndex()
+    {
+        $data = MountainGeneralBody::where('organisation', 'services')->paginate(10);
+
+        return response()->json(['members' => $data], Response::HTTP_OK);
+    }
 
     // --------------------------------
 
@@ -32,12 +38,19 @@ class MountaineeringController extends Controller
             return response()->json(['errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
+        $slug = Str::slug($request->name);
+        $check = MountainGeneralBody::where('slug', $slug)->first();
+        if ($check) {
+            return response()->json(['errors' => ['name' => ['Member already exists']]], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         MountainGeneralBody::create([
             'designation' => $request->designation ?? null,
             'name' => $request->name,
             'description' => $request->desc,
             'organisation' => 'services',
-            'added_by' => Auth::id()
+            'added_by' => Auth::id(),
+            'slug' => $slug,
         ]);
 
         return response()->json(['message' => 'General body created successfully'], Response::HTTP_CREATED);
@@ -45,11 +58,66 @@ class MountaineeringController extends Controller
 
     // --------------------------------
 
-    public function gbUpdate(Request $request, $id) {}
+    public function gbUpdate(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'designation' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'desc' => 'required|string|max:255'
+        ], [
+            '*.required' => ':Attribute is required',
+            '*.max' => ':Attribute must not exceed :max characters'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $slug = Str::slug($request->name);
+        $check = MountainGeneralBody::where('slug', $slug)
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($check) {
+            return response()->json(['errors' => ['name' => ['Member already exists']]], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        MountainGeneralBody::where('id', $id)->update([
+            'designation' => $request->designation ?? null,
+            'name' => $request->name,
+            'description' => $request->desc,
+            'slug' => $slug,
+        ]);
+
+        return response()->json(['message' => 'General body updated successfully'], Response::HTTP_OK);
+    }
 
     // --------------------------------
 
-    public function gbDestroy($id) {}
+    public function gbDestroy($id)
+    {
+        MountainGeneralBody::where('id', $id)->delete();
+
+        return response()->json(['message' => 'General body deleted successfully'], Response::HTTP_OK);
+    }
 
     // General body methods end -------------------------------
+
+    // Training calendar methods start -------------------------------
+
+    public function tcIndex() {}
+
+    // --------------------------------
+
+    public function tcStore(Request $request) {}
+
+    // --------------------------------
+
+    public function tcUpdate(Request $request, $id) {}
+
+    // --------------------------------
+
+    public function tcDestroy($id) {}
+
+    // Training calendar methods end -------------------------------
 }
