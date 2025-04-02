@@ -76,9 +76,17 @@ Route::middleware(['auth:api'])->group(function () {
     Route::controller(FairProgrammeController::class)->prefix('fair-programme')->group(function () {
         Route::get('list', 'fpList');
         Route::post('store', 'fpStore');
-        Route::put('update/{id}', 'fpUpdate');
-        Route::put('activate/{id}', 'fpActivate');
+        Route::get('edit/{uuid}', 'fpEdit');
+        Route::post('update/{uuid}', 'fpUpdate');
         Route::delete('delete/{id}', 'fpDestroy');
+        // ------------Gallery related starts ---------------
+        Route::prefix('gallery')->group(function () {
+            Route::get('list/{uuid}', 'fpGalleryList');
+            Route::post('store', 'fpGalleryStore');
+            Route::put('update/{id}', 'fpGalleryUpdate');
+            Route::delete('delete/{id}', 'fpGalleryDestroy');
+        });
+        // ------------Gallery related ends -----------------
     });
 });
 // Services app routes end -------------------------------
