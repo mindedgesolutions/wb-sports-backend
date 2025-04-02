@@ -17,7 +17,11 @@ class VocationalTrainingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function indexContent() {}
+    public function indexContent() {
+        $content = VocationalTraining::paginate(10);
+
+        return response()->json(['content' => $content], Response::HTTP_OK);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -62,6 +66,8 @@ class VocationalTrainingController extends Controller
         return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
+
+
     //
 
 
@@ -70,7 +76,7 @@ class VocationalTrainingController extends Controller
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
@@ -78,7 +84,34 @@ class VocationalTrainingController extends Controller
      */
     public function updateContent(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|string',
+        ], [
+            '*.required' => ':Attribute is required',
+        ], [
+            'content' => 'content',
+        ]);
+
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            VocationalTraining::where('id', $id)->update([
+                'content' => $request->content,
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -86,8 +119,24 @@ class VocationalTrainingController extends Controller
      */
     public function destroyContent(string $id)
     {
-        //
+        VocationalTraining::where('id', $id)->delete();
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
+
+
+    public function contentdisplay() // <-- Add Request here
+    {
+        try {
+
+            $content = VocationalTraining::where('is_active', true)->get();
+
+            return response()->json(['content' => $content], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json(['message' => 'Server Error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     //Centre Start
     public function indexCentre(string $id)

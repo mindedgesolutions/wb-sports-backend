@@ -31,6 +31,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('com-training-courses', ComputerTraining::class)->except(['show']);
     Route::put('com-training-courses/activate/{id}', [ComputerTraining::class, 'activate']);
 
+
     Route::apiResource('comp-syllabus', CompSyllabusController::class)->except(['show', 'update']);
     Route::post('comp-syllabus/update/{id}', [CompSyllabusController::class, 'syllabusUpdate']);
     Route::put('comp-syllabus/activate/{id}', [CompSyllabusController::class, 'activate']);
@@ -44,8 +45,8 @@ Route::middleware(['auth:api'])->group(function () {
         Route::prefix('content')->group(function () {
             Route::post('store-content', 'storeContent');
             Route::put('activate-content/{id}', 'activateContent');
-            Route::post('update-content', 'updateContent');
-            Route::delete('destroy-content', 'destroyContent');
+            Route::post('update-content/{id}', 'updateContent');
+            Route::delete('destroy-content/{id}', 'destroyContent');
             Route::get('index-content', 'indexContent');
         });
         Route::prefix('centre-list')->group(function () {
@@ -88,4 +89,5 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
+Route::get('vocational/content/get', [VocationalTrainingController::class, 'contentdisplay']);
 // Services website routes end -------------------------------
