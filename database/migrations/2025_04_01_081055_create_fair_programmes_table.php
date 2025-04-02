@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('added_by')->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->string('organisation');
+            $table->string('cover_image')->nullable();
             $table->timestamps();
         });
     }

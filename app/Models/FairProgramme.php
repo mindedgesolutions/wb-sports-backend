@@ -14,6 +14,12 @@ class FairProgramme extends Model
         'uuid',
         'added_by',
         'updated_by',
-        'organisation'
+        'organisation',
+        'cover_image'
     ];
+
+    public function gallery()
+    {
+        return $this->hasMany(FairProgrammeGallery::class, 'program_id');
+    }
 }

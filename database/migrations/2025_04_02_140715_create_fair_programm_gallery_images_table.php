@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaocational_training_centres', function (Blueprint $table) {
+        Schema::create('fair_programm_gallery_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('district_id')->constrained('districts');
-            $table->string('name_of_centre');
-            $table->string('address');
-            $table->string('phone');
-            $table->string('is_active')->default(false);
+            $table->foreignId('gallery_id')->constrained('fair_programme_galleries')->onDelete('cascade');
+            $table->string('image_path');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vaocational_training_centres');
+        Schema::dropIfExists('fair_programm_gallery_images');
     }
 };

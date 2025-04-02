@@ -25,13 +25,13 @@ class BannerRequest extends FormRequest
             return [
                 'page' => 'required',
                 'pageTitle' => 'nullable|max:255',
-                'banner' => 'required|image|mimes:jpeg,png,jpg,webp|max:500',
+                'banner' => 'required|image|mimes:jpeg,png,jpg,webp|max:100',
             ];
         } else {
             return [
                 'page' => 'nullable',
                 'pageTitle' => 'nullable|max:255',
-                'banner' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:500',
+                'banner' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:100',
             ];
         }
     }
