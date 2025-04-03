@@ -98,5 +98,5 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
 Route::get('vocational/content/get', [VocationalTrainingController::class, 'contentdisplay']);
-Route::get('vocational/centre-list/get', [VocationalTrainingController::class, 'contentdisplay']);
+Route::get('vocational/centre-list/get', [VocationalTrainingController::class, 'centreListDisplay']);
 // Services website routes end -------------------------------

@@ -213,4 +213,17 @@ class VocationalTrainingController extends Controller
     {
         //
     }
+
+    public function centreListDisplay()
+    {
+        try {
+
+            $centreList = VocationalTrainingCentre::where('is_active', true)->get();
+
+            return response()->json(['centreList' => $centreList], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json(['message' => 'Server Error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
