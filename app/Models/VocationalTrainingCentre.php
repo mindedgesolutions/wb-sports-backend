@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VocationalTrainingCentre extends Model
 {
     protected $fillable = [
-    'district',
+    'district_id',
     'name_of_centre',
     'address',
     'phone',

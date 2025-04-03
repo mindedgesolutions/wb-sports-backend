@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vaocational_training_centres', function (Blueprint $table) {
+        Schema::create('vocational_training_centres', function (Blueprint $table) {
             $table->id();
             $table->foreignId('district_id')->constrained('districts');
             $table->string('name_of_centre');
             $table->string('address');
             $table->string('phone');
-            $table->string('is_active')->default(false);
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vaocational_training_centres');
+        Schema::dropIfExists('vocational_training_centres');
     }
 };

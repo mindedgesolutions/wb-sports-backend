@@ -51,9 +51,9 @@ Route::middleware(['auth:api'])->group(function () {
         });
         Route::prefix('centre-list')->group(function () {
             Route::post('store-centre', 'storeCentre');
-            Route::put('activate-centre', 'activateCentre');
-            Route::post('update-centre', 'updateCentre');
-            Route::delete('destroy-centre', 'destroyCentre');
+            Route::put('activate-centre/{id}', 'activateCentre');
+            Route::post('update-centre/{id}', 'updateCentre');
+            Route::delete('destroy-centre/{id}', 'destroyCentre');
             Route::get('index-centre', 'indexCentre');
         });
     });
@@ -98,4 +98,5 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
 Route::get('vocational/content/get', [VocationalTrainingController::class, 'contentdisplay']);
+Route::get('vocational/centre-list/get', [VocationalTrainingController::class, 'contentdisplay']);
 // Services website routes end -------------------------------
