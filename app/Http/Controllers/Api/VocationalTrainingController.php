@@ -150,9 +150,11 @@ class VocationalTrainingController extends Controller
 
     //    Centre Start
 
-    public function indexCentre(string $id)
+    public function indexCentre()
     {
-        //
+        $centreList = VocationalTrainingCentre::paginate(10);
+
+        return response()->json(['centreList' => $centreList], Response::HTTP_OK);
     }
 
     public function storeCentre(Request $request)
@@ -205,13 +207,53 @@ class VocationalTrainingController extends Controller
         return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
-    public function updateCentre(string $id)
+    public function updateCentre(Request $request, string $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'districtId' => 'required|string',
+            'nameOfCentre' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+        ], [
+            '*.required' => ':Attribute is required',
+        ], [
+
+            'districtId' => 'district_id',
+            'nameOfCentre' =>  'name_of_centre',
+            'address'  => 'address',
+            'phone' => 'phone',
+        ]);
+
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            VocationalTrainingCentre::where('id', $id)->update([
+                'district_id' => $request->input('districtId'),
+                'name_of_centre' => $request->input('nameOfCentre'),
+                'address'  => $request->input('address'),
+                'phone' => $request->input('phone'),
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+
     }
     public function destroyCentre(string $id)
     {
-        //
+        VocationalTrainingCentre::where('id', $id)->delete();
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 
     public function centreListDisplay()
