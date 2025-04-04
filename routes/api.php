@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\CompCentreController;
 use App\Http\Controllers\Api\CompSyllabusController;
 use App\Http\Controllers\Api\ComputerTraining;
+use App\Http\Controllers\Api\DistrictBlockOfficeController;
 use App\Http\Controllers\Api\FairProgrammeController;
 use App\Http\Controllers\Api\MountaineeringController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
@@ -88,12 +89,16 @@ Route::middleware(['auth:api'])->group(function () {
         });
         // ------------Gallery related ends -----------------
     });
+
+    Route::apiResource('district-block-offices', DistrictBlockOfficeController::class)->except(['show']);
+    Route::put('district-block-offices/activate/{id}', [DistrictBlockOfficeController::class, 'activate']);
 });
 // Services app routes end -------------------------------
 
 // Services website routes start -------------------------------
 Route::controller(ServiceWebsiteController::class)->prefix('services')->group(function () {
     Route::get('districts', 'districts');
+    Route::get('district-wise-block-offices', 'districtWiseBlockOffices');
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
