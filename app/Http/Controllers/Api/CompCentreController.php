@@ -16,6 +16,26 @@ class CompCentreController extends Controller
     {
         $data = CompCenter::select('comp_centers.*')->with('district')
             ->join('districts', 'districts.id', '=', 'comp_centers.district_id')
+            ->when(request()->query('dist'), function ($query) {
+                return $query->where('comp_centers.district_id', request()->query('dist'));
+            })
+            ->when(request()->query('cat'), function ($query) {
+                return $query->where('comp_centers.center_category', request()->query('cat'));
+            })
+            ->when(request()->query('s'), function ($query) {
+                return $query->where('comp_centers.yctc_name', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.yctc_code', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.address_line_1', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.address_line_2', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.address_line_3', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.city', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.pincode', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.center_incharge_name', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.center_incharge_mobile', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.center_incharge_email', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.center_owner_name', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('comp_centers.center_owner_mobile', 'like', '%' . request()->query('s') . '%');
+            })
             ->orderBy('districts.name', 'asc')
             ->orderBy('comp_centers.id', 'asc')
             ->paginate(10);

@@ -18,9 +18,17 @@ class ComputerTraining extends Controller
      */
     public function index()
     {
-
-
-        $courses = CompTrainCourseDetail::where('organisation', "services")->paginate(10);
+        $courses = CompTrainCourseDetail::where('organisation', "services")
+            ->when(request()->query('type'), function ($query) {
+                return $query->where('course_type', request()->query('type'));
+            })
+            ->when(request()->query('s'), function ($query) {
+                return $query->where('course_name', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('course_duration', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('course_eligibility', 'like', '%' . request()->query('s') . '%')
+                    ->orWhere('course_fees', 'like', '%' . request()->query('s') . '%');
+            })
+            ->paginate(10);
 
         return response()->json(['courses' => $courses], Response::HTTP_OK);
     }
