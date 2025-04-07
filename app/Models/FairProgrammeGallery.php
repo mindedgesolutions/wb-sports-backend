@@ -20,6 +20,11 @@ class FairProgrammeGallery extends Model
 
     public function images()
     {
-        return $this->hasMany(FairProgrammGalleryImage::class, 'gallery_id');
+        return $this->hasMany(FairProgrammGalleryImage::class, 'gallery_id', 'id');
+    }
+
+    public function programme()
+    {
+        return $this->belongsTo(FairProgramme::class, 'program_id', 'id');
     }
 }

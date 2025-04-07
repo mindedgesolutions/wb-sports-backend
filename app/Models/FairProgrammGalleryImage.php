@@ -13,6 +13,6 @@ class FairProgrammGalleryImage extends Model
 
     public function gallery()
     {
-        return $this->belongsTo(FairProgrammeGallery::class, 'gallery_id');
+        return $this->belongsTo(FairProgrammeGallery::class, 'gallery_id', 'id');
     }
 }
