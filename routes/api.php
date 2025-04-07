@@ -99,6 +99,7 @@ Route::middleware(['auth:api'])->group(function () {
 Route::controller(ServiceWebsiteController::class)->prefix('services')->group(function () {
     Route::get('districts', 'districts');
     Route::get('district-wise-block-offices', 'districtWiseBlockOffices');
+    Route::get('computer-courses-all', 'computerCoursesAll');
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
