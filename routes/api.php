@@ -82,10 +82,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('delete/{id}', 'fpDestroy');
         // ------------Gallery related starts ---------------
         Route::prefix('gallery')->group(function () {
-            Route::get('list/{uuid}', 'fpGalleryList');
             Route::post('store', 'fpGalleryStore');
-            Route::put('update/{id}', 'fpGalleryUpdate');
+            Route::post('update/{id}', 'fpGalleryUpdate');
             Route::delete('delete/{id}', 'fpGalleryDestroy');
+            Route::delete('delete-image/{id}', 'fpGalleryImageDestroy');
+            Route::put('show/{id}', 'fpShowInGallery');
         });
         // ------------Gallery related ends -----------------
     });

@@ -154,10 +154,6 @@ class FairProgrammeController extends Controller
 
     // ------------------------------------
 
-    public function fpGalleryList() {}
-
-    // ------------------------------------
-
     public function fpGalleryStore(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -220,9 +216,133 @@ class FairProgrammeController extends Controller
 
     // ------------------------------------
 
-    public function fpGalleryUpdate(Request $request, $id) {}
+    public function fpGalleryUpdate(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'programmeDate' => 'required|before:today',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $data = FairProgrammeGallery::find($id);
+            if (!$data) {
+                return response()->json(['errors' => ['Gallery not found.']], Response::HTTP_NOT_FOUND);
+            }
+
+            $data->update([
+                'title' => trim($request->title),
+                'slug' => Str::slug($request->title),
+                'programme_date' => Date::createFromFormat('Y-m-d', $request->programmeDate),
+                'description' => $request->description ?? null,
+                'updated_by' => Auth::id(),
+            ]);
+
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $file) {
+                    $filename = Str::random(10) . time() . '-' . $file->getClientOriginalName();
+                    $directory = 'uploads/services/fairs-programmes/gallery/' . $data->program_id;
+
+                    if (!Storage::disk('public')->exists($directory)) {
+                        Storage::disk('public')->makeDirectory($directory);
+                    }
+
+                    $filePath = $file->storeAs($directory, $filename, 'public');
+
+                    FairProgrammGalleryImage::create([
+                        'gallery_id' => $data->id,
+                        'image_path' => Storage::url($filePath),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json(['message' => 'Success'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error('Error in fpGalleryUpdate: ' . $th->getMessage());
+            DB::rollBack();
+            return response()->json(['errors' => ['Something went wrong. Please try again later.']], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     // ------------------------------------
 
-    public function fpGalleryDestroy($id) {}
+    public function fpGalleryDestroy($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $images = FairProgrammGalleryImage::where('gallery_id', $id)->get();
+
+            foreach ($images as $image) {
+                $deletePath = str_replace('/storage', '', $image->image_path);
+
+                if (Storage::disk('public')->exists($deletePath)) {
+                    Storage::disk('public')->delete($deletePath);
+                }
+            }
+
+            FairProgrammGalleryImage::where('gallery_id', $id)->delete();
+            FairProgrammeGallery::where('id', $id)->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Success'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error('Error in fpGalleryDestroy: ' . $th->getMessage());
+            DB::rollBack();
+            return response()->json(['errors' => ['Error']], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ------------------------------------
+
+    public function fpGalleryImageDestroy($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $image = FairProgrammGalleryImage::find($id);
+            if (!$image) {
+                return response()->json(['errors' => ['Image not found.']], Response::HTTP_NOT_FOUND);
+            }
+
+            $deletePath = str_replace('/storage', '', $image->image_path);
+
+            if (Storage::disk('public')->exists($deletePath)) {
+                Storage::disk('public')->delete($deletePath);
+            }
+
+            $image->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Success'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error('Error in fpGalleryImageDestroy: ' . $th->getMessage());
+            DB::rollBack();
+            return response()->json(['errors' => ['Error']], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ------------------------------------
+
+    public function fpShowInGallery($id)
+    {
+        $image = FairProgrammeGallery::find($id);
+        if (!$image) {
+            return response()->json(['errors' => ['Image not found.']], Response::HTTP_NOT_FOUND);
+        }
+        $image->update(['show_in_gallery' => !$image->show_in_gallery]);
+
+        return response()->json(['message' => 'Success'], Response::HTTP_OK);
+    }
 }
