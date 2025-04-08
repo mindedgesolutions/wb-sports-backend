@@ -27,6 +27,7 @@ class FairProgramResource extends JsonResource
             'updated_at' => $this->updated_at,
             'organisation' => $this->organisation,
             'cover_image' => $this->cover_image,
+            'show_in_gallery' => $this->show_in_gallery,
             'gallery' => $this->gallery,
             'gallery_images' => $this->gallery->pluck('images')->flatten(),
         ];

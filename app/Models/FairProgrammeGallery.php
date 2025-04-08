@@ -16,6 +16,7 @@ class FairProgrammeGallery extends Model
         'organisation',
         'added_by',
         'updated_by',
+        'show_in_gallery',
     ];
 
     public function images()
