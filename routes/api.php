@@ -101,6 +101,9 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
     Route::get('districts', 'districts');
     Route::get('district-wise-block-offices', 'districtWiseBlockOffices');
     Route::get('computer-courses-all', 'computerCoursesAll');
+    Route::get('photo-galleries', 'photoGalleryAll');
+    Route::get('photo-galleries/{slug}', 'photoGallerySingle');
+    Route::get('fairs-programms', 'fairProgrammesAll');
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
