@@ -28,4 +28,9 @@ class FairProgrammeGallery extends Model
     {
         return $this->belongsTo(FairProgramme::class, 'program_id', 'id');
     }
+
+    public function cover()
+    {
+        return $this->hasOne(FairProgrammGalleryImage::class, 'gallery_id', 'id')->orderBy('id');
+    }
 }
