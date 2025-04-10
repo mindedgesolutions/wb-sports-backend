@@ -16,7 +16,9 @@ class MountaineeringController extends Controller
 
     public function gbIndex()
     {
-        $data = MountainGeneralBody::where('organisation', 'services')->paginate(10);
+        $data = MountainGeneralBody::where('organisation', 'services')
+            ->orderBy('show_order')
+            ->paginate(10);
 
         return response()->json(['members' => $data], Response::HTTP_OK);
     }
@@ -45,9 +47,9 @@ class MountaineeringController extends Controller
         }
 
         MountainGeneralBody::create([
-            'designation' => $request->designation ?? null,
-            'name' => $request->name,
-            'description' => $request->desc,
+            'designation' => trim($request->designation) ?? null,
+            'name' => trim($request->name),
+            'description' => trim($request->desc),
             'organisation' => 'services',
             'added_by' => Auth::id(),
             'slug' => $slug,
@@ -99,6 +101,17 @@ class MountaineeringController extends Controller
         MountainGeneralBody::where('id', $id)->delete();
 
         return response()->json(['message' => 'General body deleted successfully'], Response::HTTP_OK);
+    }
+
+    // --------------------------------
+
+    public function gbMembersAll()
+    {
+        $data = MountainGeneralBody::where('organisation', 'services')
+            ->orderBy('show_order')
+            ->get();
+
+        return response()->json(['members' => $data], Response::HTTP_OK);
     }
 
     // General body methods end -------------------------------

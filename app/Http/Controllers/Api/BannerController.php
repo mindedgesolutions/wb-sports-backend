@@ -57,14 +57,14 @@ class BannerController extends Controller
 
             if ($check) {
                 Banner::where('page_url', $request->page)->update([
-                    'page_title' => $request->pageTitle ?? null,
+                    'page_title' => trim($request->pageTitle) ?? null,
                     'updated_by' => Auth::id(),
                     'image_path' => Storage::url($filePath),
                 ]);
             } else {
                 Banner::create([
                     'page_url' => $request->page,
-                    'page_title' => $request->pageTitle ?? null,
+                    'page_title' => trim($request->pageTitle) ?? null,
                     'added_by' => Auth::id(),
                     'image_path' => Storage::url($filePath),
                     'organization' => 'services',
@@ -113,7 +113,7 @@ class BannerController extends Controller
             }
 
             Banner::where('id', $id)->update([
-                'page_title' => $request->pageTitle ?? $data->page_title,
+                'page_title' => trim($request->pageTitle) ?? $data->page_title,
                 'updated_by' => Auth::id(),
                 'image_path' => $request->hasFile('banner') ? Storage::url($filePath) : $data->image_path,
             ]);
