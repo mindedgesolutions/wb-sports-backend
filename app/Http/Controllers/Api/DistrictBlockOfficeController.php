@@ -48,8 +48,8 @@ class DistrictBlockOfficeController extends Controller
             'mobile_1' => $request->mobile_1 ?? null,
             'mobile_2' => $request->mobile_2 ?? null,
             'email' => $request->email ?? null,
-            'officer_name' => $request->officerName ?? null,
-            'officer_designation' => $request->officerDesignation,
+            'officer_name' => trim($request->officerName) ?? null,
+            'officer_designation' => trim($request->officerDesignation),
             'officer_mobile' => $request->officerMobile ?? null,
             'added_by' => Auth::id(),
         ]);
@@ -70,8 +70,8 @@ class DistrictBlockOfficeController extends Controller
             'mobile_1' => $request->mobile_1 ?? null,
             'mobile_2' => $request->mobile_2 ?? null,
             'email' => $request->email ?? null,
-            'officer_name' => $request->officerName ?? null,
-            'officer_designation' => $request->officerDesignation,
+            'officer_name' => trim($request->officerName) ?? null,
+            'officer_designation' => trim($request->officerDesignation),
             'officer_mobile' => $request->officerMobile ?? null,
             'updated_by' => Auth::id(),
         ]);

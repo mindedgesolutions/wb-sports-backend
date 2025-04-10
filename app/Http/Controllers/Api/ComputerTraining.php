@@ -72,10 +72,10 @@ class ComputerTraining extends Controller
 
             CompTrainCourseDetail::create([
                 'course_type' => $request->input('courseType'),
-                'course_name' => $request->input('courseName'),
+                'course_name' => trim($request->input('courseName')),
                 'course_slug' => Str::slug($request->input('courseName')),
                 'course_duration' => $request->input('duration'),
-                'course_eligibility' => $request->input('eligibility'),
+                'course_eligibility' => trim($request->input('eligibility')),
                 'course_fees' => $request->input('courseFee'),
                 'organisation' => 'services',
             ]);
@@ -139,10 +139,10 @@ class ComputerTraining extends Controller
 
             CompTrainCourseDetail::where('id', $id)->update([
                 'course_type' => $request->input('courseType'),
-                'course_name' => $request->input('courseName'),
+                'course_name' => trim($request->input('courseName')),
                 'course_slug' => Str::slug($request->input('courseName')),
                 'course_duration' => $request->input('duration'),
-                'course_eligibility' => $request->input('eligibility'),
+                'course_eligibility' => trim($request->input('eligibility')),
                 'course_fees' => $request->input('courseFee'),
 
             ]);

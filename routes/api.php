@@ -65,6 +65,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::post('store', 'gbStore');
             Route::put('update/{id}', 'gbUpdate');
             Route::delete('delete/{id}', 'gbDestroy');
+            Route::get('all', 'gbMembersAll');
         });
         Route::prefix('training-calendar')->group(function () {
             Route::get('list', 'tcIndex');

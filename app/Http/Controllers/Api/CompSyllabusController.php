@@ -61,7 +61,7 @@ class CompSyllabusController extends Controller
                 $filePath = $file->storeAs($directory, $filename, 'public');
             }
             CompSyllabus::create([
-                'name' => $request->syllabusName,
+                'name' => trim($request->syllabusName),
                 'slug' => $slug,
                 'file_path' => Storage::url($filePath),
                 'organisation' => 'services',
@@ -132,7 +132,7 @@ class CompSyllabusController extends Controller
             }
 
             CompSyllabus::where('id', $id)->update([
-                'name' => $request->syllabusName,
+                'name' => trim($request->syllabusName),
                 'slug' => $slug,
                 'file_path' => $request->hasFile('file') ? Storage::url($filePath) : $data->file_path,
             ]);
