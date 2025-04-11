@@ -69,7 +69,7 @@ class FairProgrammeController extends Controller
             'uuid' => Str::uuid(),
             'added_by' => Auth::id(),
             'organisation' => 'services',
-            'cover_image' => Storage::url($filePath),
+            'cover_image' => $request->file('cover')->getSize() > 0 ? Storage::url($filePath) : null,
         ]);
 
         return response()->json(['uuid' => $data->uuid], Response::HTTP_CREATED);
@@ -141,7 +141,7 @@ class FairProgrammeController extends Controller
             'slug' => Str::slug($request->title),
             'occurance' => $request->occurance,
             'description' => $request->description ?? null,
-            'cover_image' => isset($filePath) ? Storage::url($filePath) : $data->cover_image,
+            'cover_image' => $request->file('cover')->getSize() > 0 ? Storage::url($filePath) : $data->cover_image ?? null,
             'updated_by' => Auth::id(),
         ]);
 

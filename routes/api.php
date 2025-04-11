@@ -66,6 +66,7 @@ Route::middleware(['auth:api'])->group(function () {
             Route::put('update/{id}', 'gbUpdate');
             Route::delete('delete/{id}', 'gbDestroy');
             Route::get('all', 'gbMembersAll');
+            Route::put('set-order', 'gbMembersSetOrder');
         });
         Route::prefix('training-calendar')->group(function () {
             Route::get('list', 'tcIndex');
@@ -104,7 +105,8 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
     Route::get('computer-courses-all', 'computerCoursesAll');
     Route::get('photo-galleries', 'photoGalleryAll');
     Route::get('photo-galleries/{slug}', 'photoGallerySingle');
-    Route::get('fairs-programms', 'fairProgrammesAll');
+    Route::get('fairs-programmes', 'fairProgrammesAll');
+    Route::get('gb-members', 'gbMembersAll');
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
