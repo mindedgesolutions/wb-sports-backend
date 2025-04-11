@@ -114,6 +114,17 @@ class MountaineeringController extends Controller
         return response()->json(['members' => $data], Response::HTTP_OK);
     }
 
+    // --------------------------------
+
+    public function gbMembersSetOrder(Request $request)
+    {
+        foreach ($request->all() as $key => $value) {
+            MountainGeneralBody::where('id', $value['id'])->update(['show_order' => $key]);
+        }
+
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
+    }
+
     // General body methods end -------------------------------
 
     // Training calendar methods start -------------------------------

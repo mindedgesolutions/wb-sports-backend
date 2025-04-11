@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\CompSyllabus;
 use App\Models\CompTrainCourseDetail;
 use App\Models\District;
+use App\Models\FairProgramme;
 use App\Models\FairProgrammeGallery;
+use App\Models\MountainGeneralBody;
 use Illuminate\Http\Response;
 
 class ServiceWebsiteController extends Controller
@@ -65,5 +67,21 @@ class ServiceWebsiteController extends Controller
 
     // --------------------------------
 
-    public function fairProgrammesAll() {}
+    public function gbMembersAll()
+    {
+        $members = MountainGeneralBody::where('organisation', 'services')
+            ->orderBy('show_order')
+            ->get();
+
+        return response()->json(['members' => $members], Response::HTTP_OK);
+    }
+
+    // --------------------------------
+
+    public function fairProgrammesAll()
+    {
+        $fairs = FairProgramme::orderBy('created_at', 'desc')->get();
+
+        return response()->json(['fairs' => $fairs], Response::HTTP_OK);
+    }
 }
