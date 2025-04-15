@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\FairProgrammeController;
 use App\Http\Controllers\Api\MountaineeringController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
 use App\Http\Controllers\Api\VocationalTrainingController;
+use App\Http\Controllers\Api\YouthHostelController;
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('login', 'login');
@@ -95,6 +96,10 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('district-block-offices', DistrictBlockOfficeController::class)->except(['show']);
     Route::put('district-block-offices/activate/{id}', [DistrictBlockOfficeController::class, 'activate']);
+
+    Route::apiResource('youth-hostels', YouthHostelController::class)->except(['update']);
+    Route::post('youth-hostels/update/{id}', [YouthHostelController::class, 'youthHostelUpdate']);
+    Route::put('youth-hostels/activate/{id}', [YouthHostelController::class, 'activate']);
 });
 // Services app routes end -------------------------------
 
@@ -107,6 +112,7 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
     Route::get('photo-galleries/{slug}', 'photoGallerySingle');
     Route::get('fairs-programmes', 'fairProgrammesAll');
     Route::get('gb-members', 'gbMembersAll');
+    Route::get('youth-hostels', 'hostelsAll');
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);

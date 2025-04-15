@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\FairProgramme;
 use App\Models\FairProgrammeGallery;
 use App\Models\MountainGeneralBody;
+use App\Models\YouthHostel;
 use Illuminate\Http\Response;
 
 class ServiceWebsiteController extends Controller
@@ -83,5 +84,14 @@ class ServiceWebsiteController extends Controller
         $fairs = FairProgramme::orderBy('created_at', 'desc')->get();
 
         return response()->json(['fairs' => $fairs], Response::HTTP_OK);
+    }
+
+    // --------------------------------
+
+    public function hostelsAll()
+    {
+        $hostels = YouthHostel::where('is_active', true)->orderBy('created_at', 'desc')->get();
+
+        return response()->json(['hostels' => $hostels], Response::HTTP_OK);
     }
 }
