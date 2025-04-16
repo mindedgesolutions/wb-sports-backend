@@ -24,6 +24,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::controller(AuthController::class)->prefix('auth')->group(function () {
         Route::post('logout', 'logout');
         Route::get('me', 'me');
+        Route::post('change-password', 'changePassword');
+        Route::post('update', 'profileUpdate');
     });
 
     Route::apiResource('banners', BannerController::class)->except(['show', 'update']);

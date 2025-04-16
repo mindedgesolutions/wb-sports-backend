@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'name' => 'Souvik Nag',
             'email' => 'souvik@test.com',
             'password' => bcrypt('password'),
+            'organisation' => 'services',
         ])->assignRole('admin');
 
         UserDetail::create([
@@ -30,6 +31,7 @@ class UserSeeder extends Seeder
             'name' => 'Nelson Arafat Ali',
             'email' => 'nelson@test.com',
             'password' => bcrypt('password'),
+            'organisation' => 'services',
         ])->assignRole('admin');
 
         UserDetail::create([
