@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\DistrictBlockOfficeController;
 use App\Http\Controllers\Api\FairProgrammeController;
 use App\Http\Controllers\Api\MountaineeringController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
+use App\Http\Controllers\Api\Sports\HomepageSliderController;
+use App\Http\Controllers\Api\Sports\KeyPersonnelController;
 use App\Http\Controllers\Api\VocationalTrainingController;
 use App\Http\Controllers\Api\YouthHostelController;
 
@@ -121,3 +123,14 @@ Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
 Route::get('vocational/content/get', [VocationalTrainingController::class, 'contentdisplay']);
 Route::get('vocational/centre-list/get', [VocationalTrainingController::class, 'centreListDisplay']);
 // Services website routes end -------------------------------
+
+// Sports app routes start -------------------------------
+Route::middleware(['auth:api'])->prefix('sports')->group(function () {
+    Route::apiResource('homepage-sliders', HomepageSliderController::class)->except(['show']);
+    Route::put('homepage-sliders/activate/{id}', [HomepageSliderController::class, 'activate']);
+
+    Route::apiResource('key-personnel', KeyPersonnelController::class)->except(['show', 'update']);
+    Route::post('key-personnel/update/{id}', [KeyPersonnelController::class, 'updateMember']);
+    Route::put('key-personnel/activate/{id}', [KeyPersonnelController::class, 'activate']);
+});
+// Sports app routes end -------------------------------
