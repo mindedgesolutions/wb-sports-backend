@@ -38,5 +38,17 @@ class UserSeeder extends Seeder
             'user_id' => $user2->id,
             'slug' => Str::slug($user2->name),
         ]);
+
+        // $user1 = User::create([
+        //     'name' => 'Souvik Nag (Sports)',
+        //     'email' => 'souvik_sports@test.com',
+        //     'password' => bcrypt('password'),
+        //     'organisation' => 'sports',
+        // ])->assignRole('admin');
+
+        // UserDetail::create([
+        //     'user_id' => $user1->id,
+        //     'slug' => Str::slug($user1->name),
+        // ]);
     }
 }
