@@ -41,7 +41,7 @@ class AuthController extends Controller
         if (!Auth::attempt([
             'email' => $request->username,
             'password' => $request->password,
-            'organisation' => 'services'
+            'organisation' => $request->organisation,
         ])) {
             return response()->json(['errors' => ['Incorrect credentials']], Response::HTTP_UNAUTHORIZED);
         }
