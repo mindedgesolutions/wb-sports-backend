@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Mail\ResetPassword;
 use App\Models\User;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -54,11 +57,73 @@ class AuthController extends Controller
 
     // --------------------------------------------
 
-    public function forgotPassword(Request $request) {}
+    public function forgotPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|exists:users,email',
+        ], [
+            'email.required' => 'Email is required',
+            'email.email' => 'Invalid email',
+            'email.exists' => 'Email not found',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $toEmail = $request->email;
+            $fromEmail = $request->organisation === 'services' ? 'noreply@wbyouthservices.gov.in' : 'noreply@wbsportsandyouth.gov.in';
+            $domain = $request->organisation === 'services' ? 'wbyouthservices' : 'wbsportsandyouth';
+            $fromName = $request->organisation === 'services' ? 'Department of Youth Services & Sports (Services Wing)' : 'Department of Youth Services & Sports (Sports Wing)';
+            $body = 'Click the link below to reset your password:';
+            $link = 'http://localhost:5173/' . $domain . '/cms/reset-password/' . Crypt::encrypt($request->email);
+            $subject = 'Reset Password - ' . $fromName;
+
+            Mail::to($toEmail)->send(new ResetPassword($fromEmail, $fromName, $body, $link, $subject));
+
+            DB::commit();
+
+            return response()->json(['message' => 'Reset password link sent to your email'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     // --------------------------------------------
 
-    public function resetPassword(Request $request) {}
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'newPassword' => 'required|min:6',
+            'confirmPassword' => 'required|min:6',
+        ], [
+            '*.required' => ':Attribute is required',
+            '*.min' => ':Attribute must be at least 6 characters',
+        ], [
+            'newPassword' => 'new password',
+            'confirmPassword' => 'confirm password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+
+        if ($request->newPassword !== $request->confirmPassword) {
+            return response()->json(['errors' => ['confirmPassword' => ['Passwords do not match']]], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $email = Crypt::decrypt($request->email);
+
+        User::where('email', $email)->update(['password' => bcrypt($request->newPassword)]);
+
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
+    }
 
     // --------------------------------------------
 
