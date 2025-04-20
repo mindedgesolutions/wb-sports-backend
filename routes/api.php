@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MountaineeringController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
 use App\Http\Controllers\Api\Sports\HomepageSliderController;
 use App\Http\Controllers\Api\Sports\KeyPersonnelController;
+use App\Http\Controllers\Api\Sports\SportsPersonnelController;
 use App\Http\Controllers\Api\VocationalTrainingController;
 use App\Http\Controllers\Api\YouthHostelController;
 
@@ -31,16 +32,19 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::apiResource('banners', BannerController::class)->except(['show', 'update']);
-    Route::post('banners/update/{id}', [BannerController::class, 'bannerUpdate']);
-    Route::put('banners/activate/{id}', [BannerController::class, 'activate']);
+    Route::controller(BannerController::class)->prefix('banners')->group(function () {
+        Route::post('update/{id}', 'bannerUpdate');
+        Route::put('activate/{id}', 'activate');
+    });
 
     Route::apiResource('com-training-courses', ComputerTraining::class)->except(['show']);
     Route::put('com-training-courses/activate/{id}', [ComputerTraining::class, 'activate']);
 
-
     Route::apiResource('comp-syllabus', CompSyllabusController::class)->except(['show', 'update']);
-    Route::post('comp-syllabus/update/{id}', [CompSyllabusController::class, 'syllabusUpdate']);
-    Route::put('comp-syllabus/activate/{id}', [CompSyllabusController::class, 'activate']);
+    Route::controller(CompSyllabusController::class)->prefix('comp-syllabus')->group(function () {
+        Route::post('update/{id}', 'syllabusUpdate');
+        Route::put('activate/{id}', 'activate');
+    });
 
     Route::apiResource('comp-centres', CompCentreController::class)->except(['show']);
     Route::put('comp-centres/activate/{id}', [CompCentreController::class, 'activate']);
@@ -130,7 +134,18 @@ Route::middleware(['auth:api'])->prefix('sports')->group(function () {
     Route::put('homepage-sliders/activate/{id}', [HomepageSliderController::class, 'activate']);
 
     Route::apiResource('key-personnel', KeyPersonnelController::class)->except(['show', 'update']);
-    Route::post('key-personnel/update/{id}', [KeyPersonnelController::class, 'updateMember']);
-    Route::put('key-personnel/activate/{id}', [KeyPersonnelController::class, 'activate']);
+    Route::controller(KeyPersonnelController::class)->prefix('key-personnel')->group(function () {
+        Route::post('update/{id}', 'updateMember');
+        Route::put('activate/{id}', 'activate');
+        Route::get('all', 'keyPersonnelAll');
+        Route::put('set-order', 'keyPersonnelSetOrder');
+    });
+
+    Route::apiResource('sports-personnel', SportsPersonnelController::class)->except(['show']);
+    Route::controller(SportsPersonnelController::class)->prefix('sports-personnel')->group(function () {
+        Route::put('activate/{id}', 'activate');
+        Route::get('all', 'spPersonnelAll');
+        Route::put('set-order', 'spPersonnelSetOrder');
+    });
 });
 // Sports app routes end -------------------------------
