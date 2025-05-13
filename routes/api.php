@@ -9,13 +9,13 @@ use App\Http\Controllers\Api\ComputerTraining;
 use App\Http\Controllers\Api\DistrictBlockOfficeController;
 use App\Http\Controllers\Api\FairProgrammeController;
 use App\Http\Controllers\Api\MountaineeringController;
+use App\Http\Controllers\Api\NewsEventsController;
 use App\Http\Controllers\Api\ServiceWebsiteController;
 use App\Http\Controllers\Api\Sports\HomepageSliderController;
 use App\Http\Controllers\Api\Sports\KeyPersonnelController;
 use App\Http\Controllers\Api\Sports\SportsPersonnelController;
 use App\Http\Controllers\Api\VocationalTrainingController;
 use App\Http\Controllers\Api\YouthHostelController;
-use App\Http\Controllers\NewsEventsController;
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('login', 'login');
