@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Sports\KeyPersonnelController;
 use App\Http\Controllers\Api\Sports\SportsPersonnelController;
 use App\Http\Controllers\Api\VocationalTrainingController;
 use App\Http\Controllers\Api\YouthHostelController;
+use App\Http\Controllers\NewsEventsController;
 
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::post('login', 'login');
@@ -108,6 +109,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::apiResource('youth-hostels', YouthHostelController::class)->except(['update']);
     Route::post('youth-hostels/update/{id}', [YouthHostelController::class, 'youthHostelUpdate']);
     Route::put('youth-hostels/activate/{id}', [YouthHostelController::class, 'activate']);
+
+    Route::apiResource('news-events', NewsEventsController::class)->except(['show']);
 });
 // Services app routes end -------------------------------
 
