@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\FairProgramme;
 use App\Models\FairProgrammeGallery;
 use App\Models\MountainGeneralBody;
+use App\Models\NewsEvent;
 use App\Models\YouthHostel;
 use Illuminate\Http\Response;
 
@@ -93,5 +94,23 @@ class ServiceWebsiteController extends Controller
         $hostels = YouthHostel::where('is_active', true)->orderBy('created_at', 'desc')->get();
 
         return response()->json(['hostels' => $hostels], Response::HTTP_OK);
+    }
+
+    // --------------------------------
+
+    public function newsScroller()
+    {
+        $news = NewsEvent::orderBy('id', 'desc')->where('is_active', true)->limit(10)->get();
+
+        return response()->json(['news' => $news], Response::HTTP_OK);
+    }
+
+    // --------------------------------
+
+    public function newsEventsAll()
+    {
+        $news = NewsEvent::where('is_active', true)->get();
+
+        return response()->json(['news' => $news], Response::HTTP_OK);
     }
 }
