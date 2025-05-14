@@ -18,8 +18,10 @@ class NewsEventsController extends Controller
     public function index()
     {
         $data = NewsEvent::orderBy('id', 'desc')->paginate(10);
-        return response()->json($data);
+        return response()->json(['data' => $data], Response::HTTP_OK);
     }
+
+    // -----------------------------------------------
 
     public function store(NewsEventsRequest $request)
     {
@@ -77,13 +79,86 @@ class NewsEventsController extends Controller
         }
     }
 
-    public function update(Request $request, string $id)
+    // -----------------------------------------------
+
+    public function updateNews(NewsEventsRequest $request, string $id)
     {
-        //
+        $data = NewsEvent::findOrFail($id);
+
+        try {
+            DB::beginTransaction();
+
+            $filePath = '';
+
+            if ($request->hasFile('file') && $request->file('file')->getSize() > 0) {
+                $file = $request->file('file');
+                $filename = Str::random(10) . time() . '-' . $file->getClientOriginalName();
+                $directory = 'uploads/services/news-events';
+
+                if (!Storage::disk('public')->exists($directory)) {
+                    Storage::disk('public')->makeDirectory($directory);
+                }
+
+                if ($data) {
+                    $deletePath = str_replace('/storage', '', $data->file_path);
+
+                    if (Storage::disk('public')->exists($deletePath)) {
+                        Storage::disk('public')->delete($deletePath);
+                    }
+                }
+
+                $filePath = $file->storeAs($directory, $filename, 'public');
+            }
+
+            NewsEvent::where('id', $id)->update([
+                'title' => trim($request->title),
+                'description' => $request->description ? trim($request->description) : null,
+                'file_path' => $request->hasFile('file') ? Storage::url($filePath) : $data->file_path,
+                'event_date' => $request->eventDate ? Date::createFromFormat('Y-m-d', $request->eventDate) : null,
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+
+    // -----------------------------------------------
 
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $data = NewsEvent::findOrFail($id);
+            $filePath = str_replace('/storage', '', $data->file_path);
+
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+
+            NewsEvent::where('id', $id)->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'success'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // -----------------------------------------------
+
+    public function activate(Request $request, $id)
+    {
+        NewsEvent::whereId($id)->update(['is_active' => $request->is_active]);
+
+        return response()->json(['message' => 'success'], Response::HTTP_OK);
     }
 }

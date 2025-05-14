@@ -110,7 +110,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('youth-hostels/update/{id}', [YouthHostelController::class, 'youthHostelUpdate']);
     Route::put('youth-hostels/activate/{id}', [YouthHostelController::class, 'activate']);
 
-    Route::apiResource('news-events', NewsEventsController::class)->except(['show']);
+    Route::apiResource('news-events', NewsEventsController::class)->except(['show', 'update']);
+    Route::put('news-events/activate/{id}', [NewsEventsController::class, 'activate']);
+    Route::post('news-events/update/{id}', [NewsEventsController::class, 'updateNews']);
 });
 // Services app routes end -------------------------------
 
@@ -124,6 +126,8 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
     Route::get('fairs-programmes', 'fairProgrammesAll');
     Route::get('gb-members', 'gbMembersAll');
     Route::get('youth-hostels', 'hostelsAll');
+    Route::get('news-events/scroll', 'newsScroller');
+    Route::get('news-events', 'newsEventsAll');
 });
 Route::get('banner/get', [BannerController::class, 'pageBanner']);
 Route::get('com-training-courses/get', [ComputerTraining::class, 'courseList']);
