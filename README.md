@@ -41,7 +41,7 @@ Run npm run dev
 
 APP_NAME='West Bengal Youth & Sports Department'
 APP_ENV=local
-APP_KEY=base64:6y6U8qcE1cJZWeHrCchqRoo2oeBAEGFrbn2rcw4XYqg=
+APP_KEY=
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
 
@@ -111,11 +111,5 @@ PASSPORT_PERSONAL_ACCESS_CLIENT_ID=9e7df460-b84d-4a48-8b5b-7bf02f857f68
 PASSPORT_PERSONAL_ACCESS_CLIENT_SECRET=O8QFKnfysr3ryoVTXfjvT6OKHHQbcY3tYqBiiPa2
 
 # Looking to send emails in production? Check out our Email API/SMTP product!
-
-MAIL_MAILER=smtp
-MAIL_HOST=sandbox.smtp.mailtrap.io
-MAIL_PORT=2525
-MAIL_USERNAME=0e64cdfb5de5ba
-MAIL_PASSWORD=f4d3609bbf104d
 
 <!-- .env file contents end --------------------- -->
