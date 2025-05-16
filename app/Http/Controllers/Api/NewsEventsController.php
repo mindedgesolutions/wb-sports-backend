@@ -17,7 +17,7 @@ class NewsEventsController extends Controller
 {
     public function index()
     {
-        $data = NewsEvent::orderBy('id', 'desc')->paginate(10);
+        $data = NewsEvent::orderBy('event_date', 'desc')->paginate(10);
         return response()->json(['data' => $data], Response::HTTP_OK);
     }
 
@@ -31,6 +31,7 @@ class NewsEventsController extends Controller
             $eventSlug = Str::slug($request->title);
             $check = NewsEvent::where('slug', $eventSlug)->first();
             $filePath = '';
+            $eventYear = Date::createFromFormat('Y-m-d', $request->eventDate)->format('Y');
 
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
@@ -57,15 +58,19 @@ class NewsEventsController extends Controller
                     'title' => trim($request->title),
                     'description' => $request->description ? trim($request->description) : null,
                     'file_path' => Storage::url($filePath),
-                    'event_date' => $request->eventDate ? Date::createFromFormat('Y-m-d', $request->eventDate) : null,
+                    'event_date' => Date::createFromFormat('Y-m-d', $request->eventDate),
+                    'type' => $request->type,
+                    'event_year' => $eventYear,
                 ]);
             } else {
-                NewsEvent::create([
+                $data = NewsEvent::create([
                     'title' => trim($request->title),
                     'slug' => $eventSlug,
                     'description' => $request->description ? trim($request->description) : null,
                     'file_path' => Storage::url($filePath),
-                    'event_date' => $request->eventDate ? Date::createFromFormat('Y-m-d', $request->eventDate) : null,
+                    'event_date' => Date::createFromFormat('Y-m-d', $request->eventDate),
+                    'type' => $request->type,
+                    'event_year' => $eventYear,
                 ]);
             }
 
@@ -83,7 +88,8 @@ class NewsEventsController extends Controller
 
     public function updateNews(NewsEventsRequest $request, string $id)
     {
-        $data = NewsEvent::findOrFail($id);
+        $data = NewsEvent::whereId($id)->where('type', $request->type)->first();
+        $eventYear = Date::createFromFormat('Y-m-d', $request->eventDate)->format('Y');
 
         try {
             DB::beginTransaction();
@@ -114,7 +120,9 @@ class NewsEventsController extends Controller
                 'title' => trim($request->title),
                 'description' => $request->description ? trim($request->description) : null,
                 'file_path' => $request->hasFile('file') ? Storage::url($filePath) : $data->file_path,
-                'event_date' => $request->eventDate ? Date::createFromFormat('Y-m-d', $request->eventDate) : null,
+                'event_date' => Date::createFromFormat('Y-m-d', $request->eventDate),
+                'type' => $request->type,
+                'event_year' => $eventYear,
             ]);
 
             DB::commit();

@@ -109,7 +109,10 @@ class ServiceWebsiteController extends Controller
 
     public function newsEventsAll()
     {
-        $news = NewsEvent::where('is_active', true)->get();
+        $news = NewsEvent::where('is_active', true)
+            ->where('type', 'news')
+            ->orderBy('event_year', 'desc')
+            ->get();
 
         return response()->json(['news' => $news], Response::HTTP_OK);
     }
