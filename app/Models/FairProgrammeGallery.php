@@ -24,6 +24,11 @@ class FairProgrammeGallery extends Model
         return $this->hasMany(FairProgrammGalleryImage::class, 'gallery_id', 'id');
     }
 
+    public function latestImage()
+    {
+        return $this->hasOne(FairProgrammGalleryImage::class, 'program_id')->latest();
+    }
+
     public function programme()
     {
         return $this->belongsTo(FairProgramme::class, 'program_id', 'id');
