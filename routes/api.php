@@ -124,6 +124,8 @@ Route::controller(ServiceWebsiteController::class)->prefix('services')->group(fu
     Route::get('photo-galleries', 'photoGalleryAll');
     Route::get('photo-galleries/{slug}', 'photoGallerySingle');
     Route::get('fairs-programmes', 'fairProgrammesAll');
+    Route::get('fair-programmes/{slug}', 'fairProgrammesSingle');
+    Route::get('fair-programmes/{slug}/{gallerySlug}', 'fairProgrammesGallery');
     Route::get('gb-members', 'gbMembersAll');
     Route::get('youth-hostels', 'hostelsAll');
     Route::get('news-events/scroll', 'newsScroller');

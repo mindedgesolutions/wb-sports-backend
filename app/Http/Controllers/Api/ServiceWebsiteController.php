@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FairProgramResource;
 use App\Models\CompSyllabus;
 use App\Models\CompTrainCourseDetail;
 use App\Models\District;
 use App\Models\FairProgramme;
 use App\Models\FairProgrammeGallery;
+use App\Models\FairProgrammGalleryImage;
 use App\Models\MountainGeneralBody;
 use App\Models\NewsEvent;
 use App\Models\YouthHostel;
@@ -85,6 +87,48 @@ class ServiceWebsiteController extends Controller
         $fairs = FairProgramme::orderBy('created_at', 'desc')->get();
 
         return response()->json(['fairs' => $fairs], Response::HTTP_OK);
+    }
+
+    // --------------------------------
+
+    public function fairProgrammesSingle($slug)
+    {
+        $fair = FairProgramme::where('slug', $slug)->first();
+
+        if (!$fair) {
+            return response()->json(['message' => 'Fair not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        return FairProgramResource::make($fair);
+    }
+
+    // --------------------------------
+
+    public function fairProgrammesGallery($slug, $gallerySlug)
+    {
+        $fair = FairProgramme::select('id', 'title')->where('slug', $slug)->first();
+
+        if (!$fair->id) {
+            return response()->json(['message' => 'Fair not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $gallery = FairProgrammeGallery::select('id', 'title', 'description')
+            ->where('slug', $gallerySlug)
+            ->where('program_id', $fair->id)
+            ->first();
+
+        if (!$gallery->id) {
+            return response()->json(['message' => 'Gallery not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $images = FairProgrammGalleryImage::where('gallery_id', $gallery->id)->get();
+
+        return response()->json([
+            'images' => $images,
+            'fairTitle' => $fair->title,
+            'galleryTitle' => $gallery->title,
+            'galleryDesc' => $gallery->description,
+        ], Response::HTTP_OK);
     }
 
     // --------------------------------
